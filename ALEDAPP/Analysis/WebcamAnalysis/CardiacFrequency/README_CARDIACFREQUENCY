@@ -1,0 +1,13 @@
+README_CARDIACFREQUENCY
+    
+    
+CLASSIC USE :
+    
+   1st arg : '10' // 2nd arg : Patient ID // 3rd PATHTOALEDAPP
+   
+   this program will create an output in ALEDAPP/Analysis/FinalAnalysis/PreviousOutputs/Patient+PATIENTID
+   
+   
+DRAFT INTERFACE USE :
+  
+   Draft interface on current webcam : arguments 1] '1' // 2] '0' // 3] PATHTOALEDAPP
