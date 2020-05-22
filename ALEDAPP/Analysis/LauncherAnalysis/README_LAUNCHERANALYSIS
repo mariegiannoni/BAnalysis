@@ -1,0 +1,9 @@
+README LAUNCHERANALYSIS
+
+This program is the launcher of Behavior Analysis.
+
+When it is launched, every second it checks if there is a folder in ALEDAPP/ReceivedData.
+
+When it found the folder it check if there are files inside and calls all the analysis functions.
+
+Then the outputs is created the correspondent folder in ALEDAPP/ReceivedData is deleted.
