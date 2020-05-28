@@ -8,6 +8,7 @@
 #include <time.h>
 #include "Patient.h"
 #include "api.h"
+#include "auth.h"
 
 std::string PATHTOALEDAPP;
 
@@ -50,12 +51,17 @@ int main( int argc, char ** argv) {
 			exit(1);
 		}
 
-		if (mysql_real_connect(con, "localhost", "root", "root", "BehaviorAnalysis", 0, NULL, 0) == NULL) {
-			// The connection to the database has failed
+		// We read the password in the binary file
+		char *password = readPassword("/home/isen/project_big_data/CAD/CAD_project/data/auth/key.bin");
+		
+		if(mysql_real_connect(con, "localhost", "non-root", password, "projet", 0, NULL, 0) == NULL) {			// The connection to the database has failed
 			std::cout << "Error : " << mysql_error(con) << std::endl;
 			mysql_close(con);
 			exit(1);
 		}
+
+		// We clean and free the password
+		cleanAndFreePassword(&password);
 
 		// We check that the id of the patient is in the bdd
 		std::string query = "SELECT * FROM social_details WHERE id_socdet='" + PatientID + "'";
@@ -115,12 +121,17 @@ int main( int argc, char ** argv) {
 			exit(1);
 		}
 
-		if (mysql_real_connect(con, "localhost", "root", "root", "BehaviorAnalysis", 0, NULL, 0) == NULL) {
-			// The connection to the database has failed
+		// We read the password in the binary file
+		char *password = readPassword("/home/isen/project_big_data/CAD/CAD_project/data/auth/key.bin");
+		
+		if(mysql_real_connect(con, "localhost", "non-root", password, "projet", 0, NULL, 0) == NULL) {			// The connection to the database has failed
 			std::cout << "Error : " << mysql_error(con) << std::endl;
 			mysql_close(con);
 			exit(1);
 		}
+
+		// We clean and free the password
+		cleanAndFreePassword(&password);
 
 		// We check that the id of the patient is in the bdd
 		std::string query = "SELECT * FROM social_details WHERE id_socdet='" + PatientID + "'";
