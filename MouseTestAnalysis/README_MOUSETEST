@@ -1,0 +1,34 @@
+README_MOUSE TEST
+
+
+
+
+
+
+HOW TO USE MOUSETESTANALYSIS
+
+
+CLASSIC USE :
+	
+	1st arg : '10' // 2nd arg : Patient ID // 3rd PATHTOALEDAPP
+	
+
+DATA BASE USE :
+
+	If you want to save a mouse data: 1] Chosen number // 2] Data from webApp // 3] PATHTOALEDAPP
+	healfy :'1'
+	hesitation : '2' 
+	Tremor : '3' 
+	incoherent : '4' 
+	Patient file : '5' 
+	
+
+DRAFT INTERFACE USE :
+
+	If you want to analyse and display a mouse test : 1] 'ana' // 2] the file address // 3] PATHTOALEDAPP
+	If you want to see all test from the data base with analysis : 1] '1' // 2] '0' // 3]  PATHTOALEDAPP
+	If you want to see the global results of data base analysis : 1] '2' // 2] '0' // 3]  PATHTOALEDAPP
+
+
+
+
