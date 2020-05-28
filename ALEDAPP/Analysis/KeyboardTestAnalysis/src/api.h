@@ -2,7 +2,6 @@
 #define API_H
 
 #include "Date.h"
-#include "Patient.h"
 
 /* SYMPTOMS */
 
@@ -48,17 +47,8 @@ void retrieveGenetic(MYSQL *con, int id_medrec, int nbGenetic, short * genetic);
 // retrieve the birthdate of the patient
 std::string retrieveBirthdate(MYSQL *con, int id_socdet);
 
-// retreive the name of the genetic diseases
-std::string retrieveNameGenetic(MYSQL *con, int id_gen);
-
-// retreive the name of the allergy
-std::string retrieveNameAllergy(MYSQL *con, int id_allergy);
-
 //Convert a string into a date
 Date stringToDate(std::string str_date);
-
-// Create and fill an object of the class Patient for the patient of the id id_socdet
-Patient createPatient(MYSQL * con, int id_socdet, int std);
 
 
 /* FINAL ANALYSIS */
@@ -70,22 +60,19 @@ short nbSymptomNonNull(short * symptoms, int nbSym);
 int fillRandomly(short * symptoms, int nbSym);
 
 // To read the final analyse file
-int readFileFinalAnalyse(int id_socdet, unsigned long timestamp, std::string pathToAled, int std);
+int readFileFinalAnalyse(int id_socdet, unsigned long timestamp, std::string pathToAled);
 
 // To read the analyse file : reading of the txt file for the intermediary test
 int readFileAnalyse(short * symptoms, int nbSym, int id_socdet, int choice, std::string pathToAled);
 
-// Check if a file is in a directory
-int isPresent(std::string test, std::string pathToAled);
-
 // To merge all the files together in order to obtain all the symptoms of the different analysis
-int mergeFile(short * symptoms, int nbSym, int id_socdet, std::string pathToAled);
+int mergeFile(short * symptoms, int nbSym, int id_socdet, int mt, int kb, int f, int pf, int eb, int cf, std::string pathToAled);
 
 // To write the analyse file : creation of the txt file for the intermediary test
 int writeFileAnalyse(short * symptoms, int nbSym, int id_socdet, int choice, std::string pathToAled);
 
 // To write the final analyse file
-unsigned long writeFileFinalAnalyse(short * symptoms, int nbSym, int globalCriticality, int id_socdet, std::string pathToAled, int std);
+unsigned long writeFileFinalAnalyse(short * symptoms, int nbSym, int globalCriticality, int id_socdet, std::string pathToAled);
 
 #endif //API_H
 

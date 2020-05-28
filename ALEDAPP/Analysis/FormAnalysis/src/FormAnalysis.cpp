@@ -8,6 +8,7 @@
 #include <sstream>
 #include <string>
 #include <time.h>
+#include "auth.h"
 #include "Patient.h"
 #include "api.h"
 
@@ -38,12 +39,17 @@ int main( int argc, char ** argv) {
 			exit(1);
 		}
 
-		if (mysql_real_connect(con, "localhost", "root", "root", "BehaviorAnalysis", 0, NULL, 0) == NULL) {
-			// The connection to the database has failed
+		// We read the password in the binary file
+		char *password = readPassword("/home/isen/project_big_data/CAD/CAD_project/data/auth/key.bin");
+		
+		if(mysql_real_connect(con, "localhost", "non-root", password, "projet", 0, NULL, 0) == NULL) {			// The connection to the database has failed
 			std::cout << "Error : " << mysql_error(con) << std::endl;
 			mysql_close(con);
 			exit(1);
 		}
+
+		// We clean and free the password
+		cleanAndFreePassword(&password);
 
 		// We check that the id of the patient is in the bdd
 		std::string query = "SELECT * FROM social_details WHERE id_socdet='" + PatientID + "'";
@@ -93,12 +99,17 @@ int main( int argc, char ** argv) {
 			exit(1);
 		}
 
-		if (mysql_real_connect(con, "localhost", "root", "root", "BehaviorAnalysis", 0, NULL, 0) == NULL) {
-			// The connection to the database has failed
+		// We read the password in the binary file
+		char *password = readPassword("/home/isen/project_big_data/CAD/CAD_project/data/auth/key.bin");
+		
+		if(mysql_real_connect(con, "localhost", "non-root", password, "projet", 0, NULL, 0) == NULL) {			// The connection to the database has failed
 			std::cout << "Error : " << mysql_error(con) << std::endl;
 			mysql_close(con);
 			exit(1);
 		}
+
+		// We clean and free the password
+		cleanAndFreePassword(&password);
 
 		// We check that the id of the patient is in the bdd
 		std::string query = "SELECT * FROM social_details WHERE id_socdet='" + PatientID + "'";
@@ -150,7 +161,7 @@ int createOutputForm(MYSQL * con, int id_socdet, int std) {
     f = fopen(filename.c_str(), "rt");
 
 	if (f == NULL) {
-		std::cout << "Impossible to open the file for writing" << std::endl;
+		std::cout << "Impossible to open the file " << filename << " for writing" << std::endl;
 		return 0;
 	}
 	
@@ -180,16 +191,16 @@ int createOutputForm(MYSQL * con, int id_socdet, int std) {
 			std::cout << "value " <<  value  << " counter "  << counter << std::endl;
 			
 		counter = counter + 1;
-		if (counter == 2){
+		if (counter == 3){
 			symptom1 = value;
 		}
-		else if (counter == 8){
+		else if (counter == 9){
 			symptom2 = value;
 		}
-		else if (counter > 2 && counter < 8){
+		else if (counter > 2 && counter < 9){
 			symptoms[symptom1 -1] = symptoms[symptom1 -1] + value; // add criticality
 		}
-		else if (counter > 8){
+		else if (counter > 9){
 			symptoms[symptom2 -1] = symptoms[symptom2 -1] + value; // add criticality
 		}
 	}

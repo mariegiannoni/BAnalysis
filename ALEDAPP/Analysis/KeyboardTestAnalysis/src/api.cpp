@@ -7,9 +7,9 @@
 #include <string>
 #include <string>
 #include <time.h>
-#include "Date.h"
-#include "Patient.h"
 #include "api.h"
+#include "Patient.h"
+#include "Date.h"
 
 /* SYMPTOMS */
 
@@ -63,14 +63,6 @@ short getIdSymptom(MYSQL *con, std::string symptom){
 		exit(1);
 	}
 
-	unsigned long nb_result = 0;
-	nb_result = mysql_num_rows(result);
-	if (nb_result != 1) {
-		// We have no result registered
-		std::cout << "The symptom is not in the database " << mysql_error(con) << std::endl;
-		return -1;
-	}
-
 	// We get the row that contain the result
 	MYSQL_ROW row = NULL;
 	unsigned int num_fields = 0;
@@ -86,7 +78,7 @@ short getIdSymptom(MYSQL *con, std::string symptom){
 	// We only retrieve the first match row
 	row = mysql_fetch_row(result);
 	std::ostringstream out;
-	int idSym = 0;
+	int idSym = -1;
 
 	// If the row is non NULL, we convert the result into a number
 	if(row[0]) {
@@ -97,7 +89,7 @@ short getIdSymptom(MYSQL *con, std::string symptom){
 
 	// If the result is out of minimal bound
 	if (idSym < 1)
-		idSym = 0;
+		idSym = -1;
 
 	// We free the result set
 	mysql_free_result(result);
@@ -198,14 +190,6 @@ int retrieveGender(MYSQL *con, int id_socdet) {
 		exit(1);
 	}
 
-	unsigned long nb_result = 0;
-	nb_result = mysql_num_rows(result);
-	if (nb_result != 1) {
-		// We have no result registered
-		std::cout << "The gender is not in the database " << mysql_error(con) << std::endl;
-		return -1;
-	}
-
 	// We get the row that contain the result
 	MYSQL_ROW row = NULL;
 	unsigned int num_fields = 0;
@@ -263,14 +247,6 @@ std::string retrievePicturePath(MYSQL *con, int id_socdet) {
 		exit(1);
 	}
 
-	unsigned long nb_result = 0;
-	nb_result = mysql_num_rows(result);
-	if (nb_result != 1) {
-		// We have no result registered
-		std::cout << "The picture is not in the database " << mysql_error(con) << std::endl;
-		return "none";
-	}
-
 	// We get the row that contain the result
 	MYSQL_ROW row = NULL;
 	unsigned int num_fields = 0;
@@ -325,14 +301,6 @@ int retrieveIdMedrec(MYSQL *con, int id_socdet) {
 		std::cout << "Error : " << mysql_error(con) << std::endl;
 		mysql_close(con);
 		exit(1);
-	}
-
-	unsigned long nb_result = 0;
-	nb_result = mysql_num_rows(result);
-	if (nb_result != 1) {
-		// We have no result registered
-		std::cout << "The id of the medical record is not in the database " << mysql_error(con) << std::endl;
-		return -1;
 	}
 
 	// We get the row that contain the result
@@ -392,14 +360,6 @@ int retrieveHeight(MYSQL *con, int id_medrec) {
 		exit(1);
 	}
 
-	unsigned long nb_result = 0;
-	nb_result = mysql_num_rows(result);
-	if (nb_result != 1) {
-		// We have no result registered
-		std::cout << "The height is not in the database " << mysql_error(con) << std::endl;
-		return -1;
-	}
-
 	// We get the row that contain the result
 	MYSQL_ROW row = NULL;
 	unsigned int num_fields = 0;
@@ -457,14 +417,6 @@ int retrieveWeight(MYSQL *con, int id_medrec) {
 		exit(1);
 	}
 
-	unsigned long nb_result = 0;
-	nb_result = mysql_num_rows(result);
-	if (nb_result != 1) {
-		// We have no result registered
-		std::cout << "The weight is not in the database " << mysql_error(con) << std::endl;
-		return -1;
-	}
-
 	// We get the row that contain the result
 	MYSQL_ROW row = NULL;
 	unsigned int num_fields = 0;
@@ -499,6 +451,7 @@ int retrieveWeight(MYSQL *con, int id_medrec) {
 	return weight;
 }
 
+
 // retrieve the blood groop id of the patient
 int retrieveBloodGroup(MYSQL *con, int id_medrec) {
 	std::ostringstream a;
@@ -520,14 +473,6 @@ int retrieveBloodGroup(MYSQL *con, int id_medrec) {
 		std::cout << "Error : " << mysql_error(con) << std::endl;
 		mysql_close(con);
 		exit(1);
-	}
-
-	unsigned long nb_result = 0;
-	nb_result = mysql_num_rows(result);
-	if (nb_result != 1) {
-		// We have no result registered
-		std::cout << "The blood group is not in the database " << mysql_error(con) << std::endl;
-		return -1;
 	}
 
 	// We get the row that contain the result
@@ -693,14 +638,6 @@ std::string retrieveBirthdate(MYSQL *con, int id_socdet) {
 		exit(1);
 	}
 
-	unsigned long nb_result = 0;
-	nb_result = mysql_num_rows(result);
-	if (nb_result != 1) {
-		// We have no result registered
-		std::cout << "The birthdate is not in the database " << mysql_error(con) << std::endl;
-		return "none";
-	}
-
 	// We get the row that contain the result
 	MYSQL_ROW row = NULL;
 	unsigned int num_fields = 0;
@@ -732,134 +669,6 @@ std::string retrieveBirthdate(MYSQL *con, int id_socdet) {
 	mysql_free_result(result);
 
 	return date;
-}
-
-// retreive the name of the genetic diseases
-std::string retrieveNameGenetic(MYSQL *con, int id_gen) {
-	std::ostringstream a;
-    a << id_gen;
-	// We execute the query
-	std::string query = "SELECT name FROM genetic WHERE id_gen='" + a.str() + "'";
-	if (mysql_query(con, query.c_str())) {
-		// We can't retrieve the information we want from the db
-		std::cout << "Error : " << mysql_error(con) << std::endl;
-		mysql_close(con);
-		exit(1);
-	}
-
-	// We get the result set
-	MYSQL_RES * result = mysql_store_result(con);
-
-	if (result == NULL) {
-		// We have no result registered
-		std::cout << "Error : " << mysql_error(con) << std::endl;
-		mysql_close(con);
-		exit(1);
-	}
-
-	unsigned long nb_result = 0;
-	nb_result = mysql_num_rows(result);
-	if (nb_result != 1) {
-		// We have no result registered
-		std::cout << "The genetic disease is not in the database " << mysql_error(con) << std::endl;
-		return "none";
-	}
-
-	// We get the row that contain the result
-	MYSQL_ROW row = NULL;
-	unsigned int num_fields = 0;
-
-	num_fields = mysql_num_fields(result);
-	if (num_fields == 0) {
-		// We have no result registered
-		std::cout << "Error : " << mysql_error(con) << std::endl;
-		mysql_close(con);
-		exit(1);
-	}
-
-	// We only retrieve the first match row
-	row = mysql_fetch_row(result);
-	std::ostringstream out;
-	std::string genetic = "none";
-
-	// If the row is non NULL, we convert the result into a string
-	if(row[0]) {
-		out << row[0];
-		genetic = out.str();
-	}
-
-	// If the result is out of minimal bound
-	if (genetic.compare("") == 0)
-		genetic = "none";
-
-	// We free the result set
-	mysql_free_result(result);
-
-	return genetic;
-}
-
-// retrieve the name of the allergy
-std::string retrieveNameAllergy(MYSQL *con, int id_allergy) {
-	std::ostringstream a;
-    a << id_allergy;
-	// We execute the query
-	std::string query = "SELECT name FROM allergy WHERE id_allergy='" + a.str() + "'";
-	if (mysql_query(con, query.c_str())) {
-		// We can't retrieve the information we want from the db
-		std::cout << "Error : " << mysql_error(con) << std::endl;
-		mysql_close(con);
-		exit(1);
-	}
-
-	// We get the result set
-	MYSQL_RES * result = mysql_store_result(con);
-
-	if (result == NULL) {
-		// We have no result registered
-		std::cout << "Error : " << mysql_error(con) << std::endl;
-		mysql_close(con);
-		exit(1);
-	}
-
-	unsigned long nb_result = 0;
-	nb_result = mysql_num_rows(result);
-	if (nb_result != 1) {
-		// We have no result registered
-		std::cout << "The allergy is not in the database " << mysql_error(con) << std::endl;
-		return "none";
-	}
-
-	// We get the row that contain the result
-	MYSQL_ROW row = NULL;
-	unsigned int num_fields = 0;
-
-	num_fields = mysql_num_fields(result);
-	if (num_fields == 0) {
-		// We have no result registered
-		std::cout << "Error : " << mysql_error(con) << std::endl;
-		mysql_close(con);
-		exit(1);
-	}
-
-	// We only retrieve the first match row
-	row = mysql_fetch_row(result);
-	std::ostringstream out;
-	std::string allergy = "none";
-
-	// If the row is non NULL, we convert the result into a string
-	if(row[0]) {
-		out << row[0];
-		allergy = out.str();
-	}
-
-	// If the result is out of minimal bound
-	if (allergy.compare("") == 0)
-		allergy = "none";
-
-	// We free the result set
-	mysql_free_result(result);
-
-	return allergy;
 }
 
 // Convert a string containing a date with the format "aaaa-mm-dd" to an object of the class Date
@@ -900,148 +709,6 @@ Date stringToDate(std::string str_date){
 	delete [] str_day;
 
 	return date;
-}
-
-// Create and fill an object of the class Patient for the patient of the id id_socdet
-// if std = 1, it will display all the patient information during the filling of the object
-Patient createPatient(MYSQL * con, int id_socdet, int std) {
-	Patient patient;
-	patient.setIdSocdet(id_socdet);
-
-	// Gender
-	int gender = retrieveGender(con, id_socdet);
-	if (gender == -1) {
-		if(std == 1)
-			std::cout << "The patient has no gender" << std::endl;
-	}
-	else {
-		patient.setGender(gender);
-		if(std == 1)
-			std::cout << "Gender " << gender << std::endl;
-	}
-
-	// birthdate
-	std::string str_date = retrieveBirthdate(con, id_socdet);
-	if (str_date.compare("none") == 0) {
-		if(std == 1)
-			std::cout << "The patient has no birthdate" << std::endl;
-	}
-	else {
-		if(std == 1)
-			std::cout << "Date " << str_date<< std::endl;
-		// class Date to contain the birthdate of the patient
-		Date birthdate = stringToDate(str_date);
-		if(std == 1)
-			birthdate.printDate();
-
-		// We use the time library to retrieve the current date
-		Date today;
-		time_t t = time(NULL);
-		struct tm tm = *localtime(&t);
-		today.setDay(tm.tm_mday);
-		today.setMonth(tm.tm_mon + 1);
-		today.setYear(tm.tm_year + 1900);
-
-		// We compute the age
-		patient.computeAge(birthdate, today);
-	}
-
-	// picture
-	std::string picture = retrievePicturePath(con, id_socdet);
-	if (picture.compare("none") == 0) {
-		if(std == 1)
-			std::cout << "The patient has no picture" << std::endl;
-	}
-	else {
-		patient.setPicture(picture);
-		if(std == 1)
-			std::cout << "Picture " << picture << std::endl;
-	}
-
-	// id_medrec
-	int id_medrec = retrieveIdMedrec(con, id_socdet);
-	if (id_medrec == -1) {
-		if(std == 1)
-			std::cout << "The patient has no medical record" << std::endl;
-	}
-	else {
-		patient.setIdMedrec(id_medrec);
-		// height
-		int height = retrieveHeight(con, id_medrec);
-		if(height == -1) {
-			if(std == 1)
-				std::cout << "The patient has no height" << std::endl;
-		}
-		else {
-			patient.setHeight(height);
-			if(std == 1)
-				std::cout << "Height " << height << std::endl;
-		}
-
-		// weight
-		int weight = retrieveWeight(con, id_medrec);
-		if(weight == -1) {
-			if(std == 1)
-				std::cout << "The patient has no weight" << std::endl;
-		}
-		else {
-			patient.setWeight(weight);
-			if(std == 1)
-				std::cout << "Weight " << weight << std::endl;
-		}
-
-		if(weight != -1 && height != -1) {
-			patient.computeIMCI();
-			if (str_date.compare("none") != 0 && gender != -1) {
-				patient.computeIMG();
-			}
-		}
-
-		// id_blgrp
-		int id_blgrp = retrieveBloodGroup(con, id_medrec);
-		if (id_blgrp == -1) {
-			if(std == 1)
-				std::cout << "The patient has no blood type" << std::endl;
-		}
-		else {
-			patient.setIdBlgrp(id_blgrp);
-			if(std == 1)
-				std::cout << "Blood group " << id_blgrp << std::endl;
-		}
-
-		// allergy
-		int nbAllergy = retrieveNbAllergy(con, id_medrec);
-		if (nbAllergy == 0) {
-			if(std == 1)
-				std::cout << "The patient has no allergy" << std::endl;
-		}
-		else {
-			if(std == 1)
-				std::cout << "NbAllergy " << nbAllergy << std::endl;
-			patient.setNbAllergy(nbAllergy);
-			short allergy[nbAllergy];
-			retrieveAllergy(con, id_medrec, nbAllergy, allergy);
-			patient.setAllergy(allergy, nbAllergy);
-		}
-
-		// genetic
-		int nbGenetic = retrieveNbGenetic(con, id_medrec);
-		if (nbGenetic == 0) {
-			if(std == 1)
-				std::cout << "The patient has no genetic diseases" << std::endl;
-		}
-		else {
-			if(std == 1)
-				std::cout << "NbGenetic " << nbGenetic << std::endl;
-			patient.setNbGenetic(nbGenetic);
-			short genetic[nbGenetic];
-			retrieveGenetic(con, id_medrec, nbGenetic, genetic);
-			patient.setGenetic(genetic, nbGenetic);
-		}
-
-	}
-
-	return patient;
 }
 
 
@@ -1094,8 +761,10 @@ int fillRandomly(short * symptoms, int nbSym) {
 
 // To read the final analyse file
 // Return 0 if a problem occured, 1 otherwise
-int readFileFinalAnalyse(int id_socdet, unsigned long timestamp, std::string pathToAled, int std){
+int readFileFinalAnalyse(int id_socdet, unsigned long timestamp, std::string pathToAled){
 	FILE * f(NULL);
+
+	std::cout << "Reading of the final_analyse file" << std::endl;
 
 	// filename : Patient_id_socdet_timestamp_BehaviorAnalysis.bin
 	// exemple : id_socdet = 310 and timestamp = 1589293516 then Patient_310_1589293516_BehaviorAnalysis.bin is the filename
@@ -1110,7 +779,7 @@ int readFileFinalAnalyse(int id_socdet, unsigned long timestamp, std::string pat
 	f = fopen(filename.c_str(), "r+b");
 
 	if (f == NULL) {
-		std::cout << "Impossible to open the file " << filename << " for reading" << std::endl;
+		std::cout << "Impossible to open the file for reading" << std::endl;
 		return 0;
 	}
 
@@ -1121,8 +790,7 @@ int readFileFinalAnalyse(int id_socdet, unsigned long timestamp, std::string pat
 		return 0;
 	}
 	else {
-		if(std == 1)
-			std::cout << "hundred : " << hundred << std::endl;
+		std::cout << "hundred : " << hundred << std::endl;
 	}
 
 	// timestamps(unsigned long)
@@ -1132,8 +800,7 @@ int readFileFinalAnalyse(int id_socdet, unsigned long timestamp, std::string pat
 		return 0;
 	}
 	else {
-		if(std == 1)
-			std::cout << "timestamp :" << timestamp_now << std::endl;
+		std::cout << "timestamp :" << timestamp_now << std::endl;
 	}
 
 	// id_socdet(int)
@@ -1143,8 +810,7 @@ int readFileFinalAnalyse(int id_socdet, unsigned long timestamp, std::string pat
 		return 0;
 	}
 	else {
-		if(std == 1)
-			std::cout << "id_socdet : " << id_soc << std::endl;
+		std::cout << "id_socdet : " << id_soc << std::endl;
 	}
 
 	// global criticality(short)
@@ -1154,8 +820,7 @@ int readFileFinalAnalyse(int id_socdet, unsigned long timestamp, std::string pat
 		return 0;
 	}
 	else {
-		if(std == 1)
-			std::cout << "global criticality : " << globalCriticality << std::endl;
+		std::cout << "global criticity : " << globalCriticality << std::endl;
 	}
 
 	// nb_symptoms(int)
@@ -1165,8 +830,7 @@ int readFileFinalAnalyse(int id_socdet, unsigned long timestamp, std::string pat
 		return 0;
 	}
 	else {
-		if(std == 1)
-			std::cout << "nb : " << nb << std::endl;
+		std::cout << "nb : " << nb << std::endl;
 	}
 
 	// id_symptom(short) criticality(short)
@@ -1185,8 +849,7 @@ int readFileFinalAnalyse(int id_socdet, unsigned long timestamp, std::string pat
 				return 0;
 			}
 			else {
-				if(std == 1)
-					std::cout << "id : " << id << " criticality : " << criticality << std::endl;
+				std::cout << "id : " << id << " criticality : " << criticality << std::endl;
 			}
 		}
 	}
@@ -1204,7 +867,6 @@ int readFileFinalAnalyse(int id_socdet, unsigned long timestamp, std::string pat
 // choice = 3 : patient file
 // choice = 4 : eye blinking
 // choice = 5 : cardiac frequency
-// choice = 6 : genetic and allergy
 // return 1 if the file was correctly read
 // return 0 if a problem occurred
 int readFileAnalyse(short * symptoms, int nbSym, int id_socdet, int choice, std::string pathToAled) {
@@ -1230,9 +892,6 @@ int readFileAnalyse(short * symptoms, int nbSym, int id_socdet, int choice, std:
 	else if (choice == 5) { // cardiac frequency - CF
 		test = "CF";
 	}
-	else if (choice == 6) { // genetic and allergy - GenAll
-		test = "GenAll";
-	}
 	else {
 		return 0;
 	}
@@ -1249,7 +908,7 @@ int readFileAnalyse(short * symptoms, int nbSym, int id_socdet, int choice, std:
 	f = fopen(filename.c_str(), "rt");
 
 	if (f == NULL) {
-		std::cout << "Impossible to open the file " << filename << " for reading" << std::endl;
+		std::cout << "Impossible to open the file for writing" << std::endl;
 		return 0;
 	}
 
@@ -1270,30 +929,14 @@ int readFileAnalyse(short * symptoms, int nbSym, int id_socdet, int choice, std:
 	return 1;
 }
 
-// If the file is present in the directory of the patient, we return 1, otherwise, we return 0
-int isPresent(std::string test, std::string PatientID, std::string pathToAled) {
-	// Reading of the cardiac frequency
-	std::string pathToOutput = pathToAled + "/Analysis/FinalAnalysis/PreviousOutputs/Patient" + PatientID + "/Patient_" + PatientID + "_" + test + ".txt";
-
-	FILE * f = fopen(pathToOutput.c_str(), "rt");
-
-	if (f == NULL) {
-		//std::cout << "Impossible to open the file " << pathToOutput << " for reading" << std::endl;
-		return 0;
-	}
-
-	fclose(f);
-	return 1;
-}
-
 // To merge all the files together in order to obtain all the symptoms of the different analysis
 // symptoms must be initialized to 0
+// mt, kb, f, pf, eb, cf : when equal to 1, we merge the test related, otherwise we do not
 // return 0 if a problem occured
 // return 1 if everything went well
-int mergeFile(short * symptoms, int nbSym, int id_socdet, std::string pathToAled) {
+int mergeFile(short * symptoms, int nbSym, int id_socdet, int mt, int kb, int f, int pf, int eb, int cf, std::string pathToAled) {
 	// intermediate symptoms array
 	short symptomsIntermediate[nbSym];
-
 	// To be sure that all the symptoms are equal to zero
 	for(int i(0); i < nbSym; i++) {
 		symptoms[i] = 0;
@@ -1302,89 +945,67 @@ int mergeFile(short * symptoms, int nbSym, int id_socdet, std::string pathToAled
 
 	int read = 0;
 
-	// mt, kb, f, pf, eb, cf : when equal to 1, we merge the test related, otherwise we do not
-	std::ostringstream a;
-    a << id_socdet;
-	int mt = isPresent("MT", a.str(), pathToAled);
-	int kb = isPresent("KB", a.str(), pathToAled);
-	int f = isPresent("F", a.str(), pathToAled);
-	int pf = isPresent("PF", a.str(), pathToAled);
-	int eb = isPresent("EB", a.str(), pathToAled);
-	int cf = isPresent("CF", a.str(), pathToAled);
-	int genall = isPresent("GenAll", a.str(), pathToAled);
-
+	// if no element is equal to 1, we have nothing to merge
 	if(mt == 0 && kb == 0 && f == 0 && pf == 0 && eb == 0 && cf == 0) {
 		return 0;
 	}
 	if (mt != 0) {
 		read = readFileAnalyse(symptomsIntermediate, nbSym, id_socdet, 0, pathToAled);
-		if (read != 0) {
-			for(int i(0); i < nbSym; i++) {
-				symptoms[i] = symptoms[i] + symptomsIntermediate[i];
-			}
+		if (read == 0) {
+			return 0;
+		}
+		for(int i(0); i < nbSym; i++) {
+			symptoms[i] = symptoms[i] + symptomsIntermediate[i];
 		}
 	}
 
 	if (kb != 0) {
 		read = readFileAnalyse(symptomsIntermediate, nbSym, id_socdet, 1, pathToAled);
-		if (read != 0) {
-			for(int i(0); i < nbSym; i++) {
-				symptoms[i] = symptoms[i] + symptomsIntermediate[i];
-			}
+		if (read == 0) {
+			return 0;
+		}
+		for(int i(0); i < nbSym; i++) {
+			symptoms[i] = symptoms[i] + symptomsIntermediate[i];
 		}
 	}
 
 	if (f != 0) {
 		read = readFileAnalyse(symptomsIntermediate, nbSym, id_socdet, 2, pathToAled);
-		if (read != 0) {
-			for(int i(0); i < nbSym; i++) {
-				symptoms[i] = symptoms[i] + symptomsIntermediate[i];
-			}
+		if (read == 0) {
+			return 0;
+		}
+		for(int i(0); i < nbSym; i++) {
+			symptoms[i] = symptoms[i] + symptomsIntermediate[i];
 		}
 	}
 
 	if (pf != 0) {
 		read = readFileAnalyse(symptomsIntermediate, nbSym, id_socdet, 3, pathToAled);
-		if (read != 0) {
-			for(int i(0); i < nbSym; i++) {
-				symptoms[i] = symptoms[i] + symptomsIntermediate[i];
-			}
+		if (read == 0) {
+			return 0;
+		}
+		for(int i(0); i < nbSym; i++) {
+			symptoms[i] = symptoms[i] + symptomsIntermediate[i];
 		}
 	}
 
 	if (eb != 0) {
 		read = readFileAnalyse(symptomsIntermediate, nbSym, id_socdet, 4, pathToAled);
-		if (read != 0) {
-			for(int i(0); i < nbSym; i++) {
-				symptoms[i] = symptoms[i] + symptomsIntermediate[i];
-			}
+		if (read == 0) {
+			return 0;
+		}
+		for(int i(0); i < nbSym; i++) {
+			symptoms[i] = symptoms[i] + symptomsIntermediate[i];
 		}
 	}
 
 	if (cf != 0) {
 		read = readFileAnalyse(symptomsIntermediate, nbSym, id_socdet, 5, pathToAled);
-		if (read != 0) {
-			for(int i(0); i < nbSym; i++) {
-				symptoms[i] = symptoms[i] + symptomsIntermediate[i];
-			}
+		if (read == 0) {
+			return 0;
 		}
-	}
-
-	if (genall != 0) {
-		read = readFileAnalyse(symptomsIntermediate, nbSym, id_socdet, 6, pathToAled);
-		read = readFileAnalyse(symptomsIntermediate, nbSym, id_socdet, 6, pathToAled);
-		if (read != 0) {
-			for(int i(0); i < nbSym; i++) {
-				if(symptoms[i] != 0) {
-					symptoms[i] = symptoms[i] + symptomsIntermediate[i];
-				}
-			}
-		}
-	}
-
-	for(int i(0); i < nbSym; i++) {
-		if(symptoms[i] > 100) {
-			symptoms[i] = 100;
+		for(int i(0); i < nbSym; i++) {
+			symptoms[i] = symptoms[i] + symptomsIntermediate[i];
 		}
 	}
 
@@ -1398,7 +1019,6 @@ int mergeFile(short * symptoms, int nbSym, int id_socdet, std::string pathToAled
 // choice = 3 : patient file
 // choice = 4 : eye blinking
 // choice = 5 : cardiac frequency
-// choice = 6 : genetic and allergy
 // return 1 if the file was correctly created
 // return 0 if a problem occurred
 int writeFileAnalyse(short * symptoms, int nbSym, int id_socdet, int choice, std::string pathToAled) {
@@ -1424,9 +1044,6 @@ int writeFileAnalyse(short * symptoms, int nbSym, int id_socdet, int choice, std
 	else if (choice == 5) { // cardiac frequency - CF
 		test = "CF";
 	}
-	else if (choice == 6) { // genetic and allergy - GenAll
-		test = "GenAll";
-	}
 	else {
 		return 0;
 	}
@@ -1443,7 +1060,7 @@ int writeFileAnalyse(short * symptoms, int nbSym, int id_socdet, int choice, std
 	f = fopen(filename.c_str(), "wt");
 
 	if (f == NULL) {
-		std::cout << "Impossible to open the file " << filename << " for writing" << std::endl;
+		std::cout << "Impossible to open the file for writing" << std::endl;
 		return 0;
 	}
 
@@ -1462,9 +1079,10 @@ int writeFileAnalyse(short * symptoms, int nbSym, int id_socdet, int choice, std
 
 // To write the final analyse file
 // Return 0 if a problem occured, the timestamp otherwise
-// when std = 1 : write the information
-unsigned long writeFileFinalAnalyse(short * symptoms, int nbSym, int globalCriticality, int id_socdet, std::string pathToAled, int std) {
+unsigned long writeFileFinalAnalyse(short * symptoms, int nbSym, int globalCriticality, int id_socdet, std::string pathToAled) {
 	FILE * f(NULL);
+
+	std::cout << "Writing of the final_analyse file" << std::endl;
 
 	// timstamp
 	unsigned long timestamp = time(NULL);
@@ -1476,14 +1094,13 @@ unsigned long writeFileFinalAnalyse(short * symptoms, int nbSym, int globalCriti
     std::ostringstream b;
     b << timestamp;
 	std::string filename = pathToAled +  "/EmittedData/" + "Patient_" + a.str() + "_" + b.str() + "_BehaviorAnalysis.bin";
-	if(std == 1)
-		std::cout << filename << std::endl;
+	std::cout << filename << std::endl;
 
 	// Creation and opening of the file using the filename
 	f = fopen(filename.c_str(), "w+b");
 
 	if (f == NULL) {
-		std::cout << "Impossible to open the file " << filename << " for writing" << std::endl;
+		std::cout << "Impossible to open the file for writing" << std::endl;
 		return 0;
 	}
 
@@ -1492,25 +1109,19 @@ unsigned long writeFileFinalAnalyse(short * symptoms, int nbSym, int globalCriti
 	fwrite(&hundred, sizeof(short), 1, f);
 
 	// timestamps(unsigned long)
-	if(std == 1)
-		std::cout << "timestamp :" << timestamp << std::endl;
+	std::cout << "timestamp:" << timestamp << std::endl;
 	fwrite(&timestamp, sizeof(unsigned long), 1, f);
 
 	// id_socdet(int)
-	if(std == 1)
-		std::cout << "id_socdet :" << id_socdet << std::endl;
 	fwrite(&id_socdet, sizeof(int), 1, f);
 
 	// global criticality(short)
-	if(std == 1)
-		std::cout << "global criticality :" << globalCriticality << std::endl;
 	fwrite(&globalCriticality, sizeof(short), 1, f);
 
 	// nb_symptoms(int)
 	short nb = nbSymptomNonNull(symptoms, nbSym);
 	fwrite(&nb, sizeof(short), 1, f);
-	if(std == 1)
-		std::cout << "nb : " << nb << std::endl;
+	std::cout << "nb : " << nb << std::endl;
 
 	// id_symptom(short) criticality(short)
 	if(nb > 0) {
@@ -1522,8 +1133,7 @@ unsigned long writeFileFinalAnalyse(short * symptoms, int nbSym, int globalCriti
 				// criticality (short)
 				short criticality = symptoms[i];
 				fwrite(&criticality, sizeof(short), 1, f);
-				if(std == 1)
-					std::cout << "id : " << id << " criticality : " << criticality << std::endl;
+				std::cout << "id : " << id << " criticality : " << criticality << std::endl;
 			}
 		}
 	}
@@ -1533,3 +1143,4 @@ unsigned long writeFileFinalAnalyse(short * symptoms, int nbSym, int globalCriti
 
 	return timestamp;
 }
+

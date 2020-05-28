@@ -37,7 +37,8 @@ KeyboardData::KeyboardData(int choice, string fileAddress, string askedSentence 
 
 	m_tabSpeed = NULL;
 	m_mistakes = NULL;
-
+	m_patientWrittenChar = NULL;
+	m_timeForChar = NULL;
 
 
 
@@ -51,7 +52,7 @@ KeyboardData::KeyboardData(int choice, string fileAddress, string askedSentence 
     if (KBFile.is_open())
     {
         //cout << endl << "Open KBFile OK" << endl;
-        
+
         // -------------------------------------------------------------------------------------------------------------
         // first get ALL WRITTEN CHAR
 
@@ -88,9 +89,9 @@ KeyboardData::KeyboardData(int choice, string fileAddress, string askedSentence 
 		{
 			if (i == 0) // FIRST LOOP
 			{
-				
+
 				SMwrittenCharAndTime >> firstTime;
-				m_timeForChar[0] = 0; 
+				m_timeForChar[0] = 0;
 			}
 			else
 			{
@@ -106,7 +107,7 @@ KeyboardData::KeyboardData(int choice, string fileAddress, string askedSentence 
 
 			SMwrittenCharAndTime.ignore(1,'/');
 
-			SMwrittenCharAndTime >> currentChar; 
+			SMwrittenCharAndTime >> currentChar;
 
 			// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 			// SPECIAL CASE for some "currentChar"
@@ -154,11 +155,11 @@ KeyboardData::KeyboardData(int choice, string fileAddress, string askedSentence 
 		getline (KBFile,testResultChar);
 		getline (KBFile,testResultChar);
 		getline (KBFile,testResultChar); */
-		
+
 		//cout << testResultChar << endl;
 
 
-		
+
 	/*	short lengthResult = testResultChar.size();
 		m_askedSentence = new char[lengthResult + 1]; //dynamic allocation for m_askedSentence
 
@@ -169,7 +170,7 @@ KeyboardData::KeyboardData(int choice, string fileAddress, string askedSentence 
 
 		m_askedSentence[lengthResult] = '\0'; //add the \0  */
 
-	
+
 		m_askedSentence = new char[askedSentence.size() + 1];
 
 		for (int i = 0; i < (int)askedSentence.size(); i++)
@@ -182,7 +183,7 @@ KeyboardData::KeyboardData(int choice, string fileAddress, string askedSentence 
 
 
         KBFile.close();
-  
+
     }
 
 
@@ -194,7 +195,7 @@ KeyboardData::KeyboardData(int choice, string fileAddress, string askedSentence 
 
 
 
-//draft interface builder 
+//draft interface builder
 KeyboardData::KeyboardData(char* patientName)
 {
 	m_tabSpeed = NULL;
@@ -404,7 +405,7 @@ void KeyboardData::analyzeMistakes (int choice)
 	}
 
 	if (choice != 10)
-	{	
+	{
 		for (int i(0); i <= originalWordsNumber; i++)
 		{
 			cout << "Word number : " << i << " is : " << listOriginalWords[i] << endl;
@@ -444,7 +445,7 @@ void KeyboardData::analyzeMistakes (int choice)
 	}
 
 	if (choice != 10)
-	{	
+	{
 		for (int i(0); i <= originalWordsNumber; i++)
 		{
 			cout << "2 : Word number : " << i << " is : " << listPatientWords[i] << endl;
@@ -472,7 +473,7 @@ void KeyboardData::analyzeMistakes (int choice)
 		}
 	}
 	if (choice != 10)
-	{	
+	{
 		cout << "number of words with mistake = " << wordsWithMistakes << endl;
 	}
 

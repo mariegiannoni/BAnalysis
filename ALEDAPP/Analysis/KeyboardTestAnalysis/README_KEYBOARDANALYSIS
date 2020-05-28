@@ -3,12 +3,12 @@ README_KEYBOARDANALYSIS
 HOW TO USE KEYBOARDANALYSIS
 
 CLASSIC USE :
+	
+	./KeyboardAnalysis 10 ./../../ReceivedData/KeyboardTestData/Patient0KB
 
-	1st arg : '10' // 2nd arg : Patient ID // 3rd PATHTOALEDAPP
-
-	That will create an output in ALEDAPP/Analysis/FinalAnalysis/PreviousOutputs/Patient0/
+	That will create an output in ALEDAPP/Analysis/FinalAnalysis/PreviousOutputs/Patient0/Patient0KB
 
 DRAFT INTERFACE USE :
 
-	Draft interface mode : 1] '1' // 2] '0' // 3] PATHTOALEDAPP 
+	To use the draft interface mode on embarked data enter just 1 as the first argument.
 

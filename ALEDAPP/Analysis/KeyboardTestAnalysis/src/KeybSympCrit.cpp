@@ -9,6 +9,7 @@
 #include <mysql.h>
 #include "KeybSympCrit.h"
 #include "api.h"
+#include "auth.h"
 
 using namespace std;
 
@@ -190,12 +191,29 @@ void KeybSympCrit::createOutputAnalysis(string PatientID, string PATHTOALEDAPP)
 		exit(1);
 	}
 
-	if (mysql_real_connect(con, "localhost", "root", "root", "BehaviorAnalysis", 0, NULL, 0) == NULL) {
-		// The connection to the database has failed
-		std::cout << "Error : " << mysql_error(con) << std::endl;
-		mysql_close(con);
-		exit(1);
-	}
+	// We read the password in the binary file
+		char *password = readPassword("/home/isen/project_big_data/CAD/CAD_project/data/auth/key.bin");
+
+		if(mysql_real_connect(con, "localhost", "non-root", password, "projet", 0, NULL, 0) == NULL) {			// The connection to the database has failed
+			std::cout << "Error : " << mysql_error(con) << std::endl;
+			mysql_close(con);
+			exit(1);
+		}
+
+		// We clean and free the password
+		cleanAndFreePassword(&password);
+
+		// We check that the id of the patient is in the bdd
+		std::string query = "SELECT * FROM social_details WHERE id_socdet='" + PatientID + "'";
+		if (mysql_query(con, query.c_str())) {
+			// We can't retrieve the information we want from the db
+			std::cout << "Error : " << mysql_error(con) << std::endl;
+			mysql_close(con);
+			exit(1);
+		}
+
+		// We get the result set
+		MYSQL_RES * result = mysql_store_result(con);
 
 	// We find the number of symptoms on the table using mysql_num_rows
 	int nbSym = retrieveNbSymp(con);
@@ -251,8 +269,8 @@ void KeybSympCrit::createOutputAnalysis(string PatientID, string PATHTOALEDAPP)
 		std::cout << "Keyboard test file was not writing correctly\n" << std::endl;
 	}
 	else {
+		std::cout << ">>>Patient"+ PatientID +" --> Creation of : Patient_" + PatientID + "_KB.txt" << std::endl;
 		//std::cout << "creation of : " + PATHTOALEDAPP + "/Analysis/FinalAnalysis/PreviousOutputs/Patient" + PatientID + "/Patient_" + PatientID + "_KB.txt" << std::endl;
-		std::cout << ">>>Patient"+PatientID+" --> Creation of : Patient_" + PatientID + "_KB.txt" << std::endl;
 	}
 
 }

@@ -41,18 +41,29 @@ int main( int argc, char** argv )
     	string pathToInput = PATHTOALEDAPP + "/ReceivedData/" + "Patient" + argv[2] + "/" + "Patient" + argv[2] + "KT.txt";
 
     	//std::cout << pathToInput << std::endl;
+    	FILE * f = NULL;
+    	f = fopen(pathToInput.c_str(), "rt");
+    	
+    	if(f == NULL) {
+			std::cout << "The file " << pathToInput << " is not present" << std::endl;
+			return 0;
+		}
+		else {
+			fclose(f);
+			
+			KeyboardData* myKeyboardData = new KeyboardData(10, pathToInput, ASKEDSENTENCE );
 
-    	KeyboardData* myKeyboardData = new KeyboardData(10, pathToInput, ASKEDSENTENCE );
+			//cout << "asked sentence : " << myKeyboardData->getAskedSentence();
+			//cout << "my final sentence : " <<  myKeyboardData->getPatientWrittenChar() << endl;
+			myKeyboardData->listSpeed();
+			myKeyboardData->analyzeMistakes(10);
 
-    	//cout << "asked sentence : " << myKeyboardData->getAskedSentence();
-    	//cout << "my final sentence : " <<  myKeyboardData->getPatientWrittenChar() << endl;
-    	myKeyboardData->listSpeed();
-		myKeyboardData->analyzeMistakes(10);
-
-		KeybSympCrit* myKeybSympCrit = new KeybSympCrit(myKeyboardData->getTabSpeed(), myKeyboardData->getMistakes());
+			KeybSympCrit* myKeybSympCrit = new KeybSympCrit(myKeyboardData->getTabSpeed(), myKeyboardData->getMistakes());
 
 
-		myKeybSympCrit->createOutputAnalysis(argv[2],PATHTOALEDAPP);
+			myKeybSympCrit->createOutputAnalysis(argv[2],PATHTOALEDAPP);
+		}
+		
 
     }
         // draft interface mode

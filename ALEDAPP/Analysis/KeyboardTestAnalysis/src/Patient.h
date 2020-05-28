@@ -47,6 +47,7 @@ class Patient
 
 		// Destructor
         virtual ~Patient() {
+			std::cout << "\nFree of memory" << std::endl;
 			if (symptoms != NULL){
 				delete [] symptoms;
 			}
@@ -108,15 +109,7 @@ class Patient
         void setWeight(int val) { weight = val; }
 
 		// Allergy
-        void getAllergy(short * all) {
-        	if(allergy != NULL) {
-        		if (all == NULL)
-					all = new short[nbAllergy];
-
-        		for(int i(0); i < nbAllergy; i++)
-        			all[i] = allergy[i];
-        	}
-        }
+        short * getAllergy() { return allergy; }
         void setAllergy(short * val, int nb) {
 			if (allergy == NULL)
 				allergy = new short[nb];
@@ -129,15 +122,7 @@ class Patient
         void setNbAllergy(int val) { nbAllergy = val; }
 
 		// Genetic
-        void getGenetic(short * gen) {
-        	if(genetic != NULL) {
-        		if (gen == NULL)
-					gen = new short[nbGenetic];
-
-        		for(int i(0); i < nbGenetic; i++)
-        			gen[i] = genetic[i];
-        	}
-        }
+        short * getGenetic() { return genetic; }
         void setGenetic(short * val, int nb) {
 			if (genetic == NULL)
 				genetic = new short[nb];

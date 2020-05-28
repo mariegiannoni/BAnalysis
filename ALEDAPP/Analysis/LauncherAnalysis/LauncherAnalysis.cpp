@@ -18,7 +18,7 @@
 
 using namespace std;
 
-#define PATHTOALEDAPP "/home/herrygabriel/ALEDAPP"
+#define PATHTOALEDAPP "/home/isen/project_big_data/ALEDAPP"
 
 
 void launcherManager (string choice);
@@ -35,7 +35,7 @@ int main( int argc, char** argv )
     {
     	cout << "Classic mode :" << endl;
         cout << "1st arg : '10' " << endl;
-        cout << "this program will create folder for answer and call : KeyboardTest -> MouseTest -> " << endl;
+        cout << "this program will create folder for answer and call : " << endl;
         cout << "KeyboardTest -> MouseTest -> EyesBlinking -> CardiacFrequency -> FormAnalysis -> Patient fileAnalysis -> FinalAnalysis" << endl;
         cout << "LauncherAnalysis erase input date and produced data in FinalAnalysis/PreviousOutputs" << endl;
         //cout << "It you don't want to erase inputs data launch the Launcher with '11' as the first argument." << endl;
